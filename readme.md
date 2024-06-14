@@ -27,4 +27,5 @@ This project demonstrates a simple CRUD (Create, Read, Update, Delete) applicati
 - `mysql2`: ^3.10.0
 - `sequelize`: ^6.37.3
 
+<!-- :-) -->
 
