@@ -1,4 +1,4 @@
-# Simple CRUD Application with React, Express, and MySQL
+# Simple CRUD with React, Express, and MySQL
 
 This project demonstrates a simple CRUD (Create, Read, Update, Delete) application built using React for the frontend, Express for the backend, and MySQL for the database.
 
