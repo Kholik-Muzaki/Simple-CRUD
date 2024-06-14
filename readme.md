@@ -28,4 +28,4 @@ This project demonstrates a simple CRUD (Create, Read, Update, Delete) applicati
 - `sequelize`: ^6.37.3
 
 <!-- :-) -->
-
+Thanks
