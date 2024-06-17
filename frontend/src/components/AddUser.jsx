@@ -1,21 +1,31 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const AddUser = () => {
+import CryptoJS from "crypto-js";
 
+const AddUser = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [gender, setGender] = useState("Male");
-
     const navigate = useNavigate();
+
+    const secretKey = import.meta.env.VITE_SECRET_KEY; // Ganti dengan secret key yang sama seperti di backend
+
+    const encryptData = (data) => {
+        return CryptoJS.AES.encrypt(data, secretKey).toString();
+    };
 
     const saveUser = async (e) => {
         e.preventDefault();
         try {
+            const encryptedName = encryptData(name);
+            const encryptedEmail = encryptData(email);
+            const encryptedGender = encryptData(gender);
+
             await axios.post("http://localhost:5000/users", {
-                name,
-                email,
-                gender
+                name: encryptedName,
+                email: encryptedEmail,
+                gender: encryptedGender
             });
             setName("");
             setEmail("");
@@ -24,7 +34,8 @@ const AddUser = () => {
         } catch (error) {
             console.log(error);
         }
-    }
+    };
+
     return (
         <>
             <div className="columns mt-5 is-centered">
@@ -38,7 +49,8 @@ const AddUser = () => {
                                     value={name}
                                     type="text"
                                     className="input"
-                                    placeholder="Name" />
+                                    placeholder="Name"
+                                />
                             </div>
                         </div>
                         <div className="field">
@@ -46,9 +58,11 @@ const AddUser = () => {
                             <div className="control">
                                 <input
                                     onChange={(e) => setEmail(e.target.value)}
-                                    value={email} type="text"
+                                    value={email}
+                                    type="text"
                                     className="input"
-                                    placeholder="Email" />
+                                    placeholder="Email"
+                                />
                             </div>
                         </div>
                         <div className="field">
@@ -57,7 +71,8 @@ const AddUser = () => {
                                 <div className="select is-fullwidth">
                                     <select
                                         value={gender}
-                                        onChange={(e) => setGender(e.target.value)}>
+                                        onChange={(e) => setGender(e.target.value)}
+                                    >
                                         <option>Male</option>
                                         <option>Female</option>
                                     </select>
@@ -65,13 +80,15 @@ const AddUser = () => {
                             </div>
                         </div>
                         <div className="field">
-                            <button className="button is-success" type="submit">Save</button>
+                            <button className="button is-success" type="submit">
+                                Save
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
 export default AddUser;

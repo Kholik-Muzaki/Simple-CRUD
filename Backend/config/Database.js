@@ -6,3 +6,4 @@ const db = new Sequelize("simple_crud", "root", "", {
 });
 
 export default db;
+
