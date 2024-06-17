@@ -63,7 +63,7 @@ export const decrypt = (text) => {
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
-};```
+};````
 
 ## Security Considerations
 
@@ -91,6 +91,3 @@ When updating existing records, re-encrypt data to maintain confidentiality. Avo
 Delete records securely without exposing sensitive information. Ensure that deletion operations comply with data protection regulations and securely erase data from both storage and backups.
 
 ---
-
-These security considerations and integration practices help safeguard sensitive data throughout the CRUD operations in your application. Implement them diligently to protect against unauthorized access and data breaches.
-````
