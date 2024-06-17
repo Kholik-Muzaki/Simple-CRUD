@@ -10,7 +10,7 @@ const EditUser = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
-    const secretKey = import.meta.env.VITE_SECRET_KEY; // Ganti dengan secret key yang sama seperti di backend
+    const secretKey = import.meta.env.VITE_SECRET_KEY;
 
     const encryptData = (data) => {
         return CryptoJS.AES.encrypt(data, secretKey).toString();
