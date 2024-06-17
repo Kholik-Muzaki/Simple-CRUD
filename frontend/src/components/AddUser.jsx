@@ -9,7 +9,7 @@ const AddUser = () => {
     const [gender, setGender] = useState("Male");
     const navigate = useNavigate();
 
-    const secretKey = import.meta.env.VITE_SECRET_KEY; // Ganti dengan secret key yang sama seperti di backend
+    const secretKey = import.meta.env.VITE_SECRET_KEY;
 
     const encryptData = (data) => {
         return CryptoJS.AES.encrypt(data, secretKey).toString();
