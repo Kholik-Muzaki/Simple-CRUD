@@ -1,17 +1,24 @@
-import { useState, useEffect } from "react"
-import axios from "axios"
-import { Link } from "react-router-dom"
-const UserList = () => {
+// UserList.js
 
-    const [users, setUsers] = useState([])
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+
+const UserList = () => {
+    const [users, setUsers] = useState([]);
+
     useEffect(() => {
-        getUsers()
+        getUsers();
     }, []);
+
     const getUsers = async () => {
-        const response = await axios.get("http://localhost:5000/users");
-        setUsers(response.data);
-        console.log(response.data);
-    }
+        try {
+            const response = await axios.get("http://localhost:5000/users");
+            setUsers(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const deleteUser = async (id) => {
         try {
@@ -20,7 +27,7 @@ const UserList = () => {
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
     return (
         <div className="columns mt-5 is-centered">
@@ -45,6 +52,7 @@ const UserList = () => {
                                 <td>{user.gender}</td>
                                 <td>
                                     <Link to={`/edit/${user.id}`} className="button is-small is-success">Edit</Link>
+                                    <Link to={`/detail/${user.id}`} className="button is-small is-info">Detail</Link>
                                     <button
                                         onClick={() => deleteUser(user.id)}
                                         className="button is-small is-danger">Delete</button>
@@ -55,7 +63,7 @@ const UserList = () => {
                 </table>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default UserList
+export default UserList;
