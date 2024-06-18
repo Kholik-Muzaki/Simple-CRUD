@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import CryptoJS from "crypto-js";
 
 const AddUser = () => {
     const [name, setName] = useState("");
@@ -9,23 +8,13 @@ const AddUser = () => {
     const [gender, setGender] = useState("Male");
     const navigate = useNavigate();
 
-    const secretKey = import.meta.env.VITE_SECRET_KEY;
-
-    const encryptData = (data) => {
-        return CryptoJS.AES.encrypt(data, secretKey).toString();
-    };
-
     const saveUser = async (e) => {
         e.preventDefault();
         try {
-            const encryptedName = encryptData(name);
-            const encryptedEmail = encryptData(email);
-            const encryptedGender = encryptData(gender);
-
             await axios.post("http://localhost:5000/users", {
-                name: encryptedName,
-                email: encryptedEmail,
-                gender: encryptedGender
+                name,
+                email,
+                gender
             });
             setName("");
             setEmail("");
