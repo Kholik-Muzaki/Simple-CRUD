@@ -73,6 +73,7 @@ export const getUsersById = async (req, res) => {
     }
 }
 
+
 export const createUser = async (req, res) => {
     try {
         const iv = generateIV();
@@ -93,10 +94,11 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     try {
+        const iv = generateIV(); // Generate IV for encryption
         const encryptedData = {
-            name: encrypt(req.body.name),
-            email: encrypt(req.body.email),
-            gender: encrypt(req.body.gender)
+            name: encrypt(req.body.name, iv),
+            email: encrypt(req.body.email, iv),
+            gender: encrypt(req.body.gender, iv)
         };
         await User.update(encryptedData, {
             where: {
@@ -104,7 +106,7 @@ export const updateUser = async (req, res) => {
             }
         });
         res.status(200).json({
-            "message": "User Updated"
+            message: "User Updated"
         });
     } catch (error) {
         console.log(error.message);
@@ -122,6 +124,29 @@ export const deleteUser = async (req, res) => {
         res.status(200).json({
             "message": "User Deleted"
         });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+export const getUserDetail = async (req, res) => {
+    try {
+        const response = await User.findOne({
+            where: {
+                id: req.params.id
+            }
+        });
+        if (!response) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const decryptedResponse = {
+            id: response.id,
+            name: decrypt(response.name),
+            email: decrypt(response.email),
+            gender: decrypt(response.gender)
+        };
+        res.status(200).json(decryptedResponse);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ error: 'Internal Server Error' });

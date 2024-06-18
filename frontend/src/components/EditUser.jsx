@@ -7,14 +7,13 @@ const EditUser = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [gender, setGender] = useState("Male");
+    const [initialName, setInitialName] = useState("");
+    const [initialEmail, setInitialEmail] = useState("");
+    const [initialGender, setInitialGender] = useState("Male"); // Pastikan ini sesuai dengan nilai default yang digunakan di backend
     const navigate = useNavigate();
     const { id } = useParams();
 
     const secretKey = import.meta.env.VITE_SECRET_KEY;
-
-    const encryptData = (data) => {
-        return CryptoJS.AES.encrypt(data, secretKey).toString();
-    };
 
     const decryptData = (encryptedData) => {
         const bytes = CryptoJS.AES.decrypt(encryptedData, secretKey);
@@ -23,23 +22,20 @@ const EditUser = () => {
 
     useEffect(() => {
         getUserById();
-    }, []);
+    }, [id]);
 
     const updateUser = async (e) => {
         e.preventDefault();
         try {
-            const encryptedName = encryptData(name);
-            const encryptedEmail = encryptData(email);
-            const encryptedGender = encryptData(gender);
+            const encryptedName = CryptoJS.AES.encrypt(name, secretKey).toString();
+            const encryptedEmail = CryptoJS.AES.encrypt(email, secretKey).toString();
+            const encryptedGender = CryptoJS.AES.encrypt(gender, secretKey).toString();
 
-            await axios.patch(`http://localhost:5000/users/${id}`, {
+            await axios.put(`http://localhost:5000/users/${id}`, {
                 name: encryptedName,
                 email: encryptedEmail,
                 gender: encryptedGender
             });
-            setName("");
-            setEmail("");
-            setGender("Male");
             navigate("/");
         } catch (error) {
             console.log(error);
@@ -52,12 +48,23 @@ const EditUser = () => {
             const decryptedName = decryptData(response.data.name);
             const decryptedEmail = decryptData(response.data.email);
             const decryptedGender = decryptData(response.data.gender);
+
             setName(decryptedName);
+            setInitialName(decryptedName); // Simpan nilai awal name
             setEmail(decryptedEmail);
+            setInitialEmail(decryptedEmail); // Simpan nilai awal email
             setGender(decryptedGender);
+            setInitialGender(decryptedGender); // Simpan nilai awal gender
         } catch (error) {
             console.log(error);
         }
+    };
+
+    const resetForm = () => {
+        // Mengatur kembali nilai form ke nilai awal sebelum diedit
+        setName(initialName);
+        setEmail(initialEmail);
+        setGender(initialGender);
     };
 
     return (
@@ -97,16 +104,27 @@ const EditUser = () => {
                                         value={gender}
                                         onChange={(e) => setGender(e.target.value)}
                                     >
-                                        <option>Male</option>
-                                        <option>Female</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div className="field">
-                            <button className="button is-success" type="submit">
-                                Update
-                            </button>
+                        <div className="field is-grouped">
+                            <div className="control">
+                                <button className="button is-success" type="submit">
+                                    Update
+                                </button>
+                            </div>
+                            <div className="control">
+                                <button
+                                    className="button is-light"
+                                    type="button"
+                                    onClick={resetForm}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
